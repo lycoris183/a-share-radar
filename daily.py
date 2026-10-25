@@ -353,6 +353,13 @@ def main():
     sys.stdout = tee
     try:
         print(f"# {day} 板块收盘分析\n")
+        if now.isoweekday() >= 6:
+            print("> 今日为周末休市：不采集数据、不生成新快照，网页保留上一个交易日。")
+            save_json(os.path.join(DATA, "last_meta.json"),
+                      {"date": day, "ts": now.isoformat(timespec="seconds"),
+                       "stale": False, "weekday": now.isoweekday(),
+                       "trading_day": False, "send_after": "16:10"})
+            return 0
         recs = snapshot_today()
         if not recs:
             print("!! 板块数据获取失败（检查网络/接口），本次不产出建议")
@@ -362,7 +369,10 @@ def main():
         fp_sum = hashlib.md5("".join(
             f"{c}:{round(f(recs[c].get('zdf')), 2)}" for c in sorted(recs)
         ).encode()).hexdigest()
-        stale = bool(prev and prev.get("date") == day and prev.get("_fp") == fp_sum)
+        same_fp = bool(prev and prev.get("_fp") == fp_sum)
+        stale = bool(prev and prev.get("date") == day and same_fp)
+        # 与上一份快照数据完全一致（节假日/停市）：不写新快照，避免把休市日当成交易日
+        non_trading = bool(prev and prev.get("date") != day and same_fp)
 
         idx = qq_quotes([c for c, _ in INDEXES])
         parts = []
@@ -456,8 +466,12 @@ def main():
         if prev_day:
             print(f"\n_对比基准：{prev_day}_")
 
-        notice = ("（重复运行，行情与上次一致）" if (stale and prev_day == day)
-                  else (f"（休市/非交易日，数据同{prev_day}）" if stale else ""))
+        if stale and prev_day == day:
+            notice = "（重复运行，行情与上次一致）"
+        elif non_trading:
+            notice = f"（今日休市，数据同 {prev_day}，不生成新快照）"
+        else:
+            notice = ""
         push = build_push(day, parts, rows, frows, notice)
         with open(os.path.join(DATA, "last_push.txt"), "w", encoding="utf-8") as pf:
             pf.write(push)
@@ -467,38 +481,40 @@ def main():
         log_path = os.path.join(DATA, "daily_log.csv")
         header = ["date", "code", "name", "today", "d5", "d20", "d60", "ytd",
                   "main1_wan", "main5_wan", "streak", "signal", "score"]
-        old_rows = []
-        if os.path.exists(log_path):
-            with open(log_path, encoding="utf-8-sig", newline="") as logf:
-                old_rows = [r for r in csv.reader(logf) if r and r[0] != day and r != header]
-        with open(log_path, "w", encoding="utf-8-sig", newline="") as logf:
-            w = csv.writer(logf)
-            w.writerow(header)
-            w.writerows(old_rows)
-            for x in rows:
-                w.writerow([day, x["code"], x["name"], f"{x['today']:.2f}", f"{x['d5']:.2f}",
-                            f"{x['d20']:.2f}", f"{x['d60']:.2f}", f"{x['ytd']:.1f}",
-                            int(x["main1"]), int(x["main5"]), x["streak"], x["act"], x["score"]])
+        if not non_trading:
+            old_rows = []
+            if os.path.exists(log_path):
+                with open(log_path, encoding="utf-8-sig", newline="") as logf:
+                    old_rows = [r for r in csv.reader(logf) if r and r[0] != day and r != header]
+            with open(log_path, "w", encoding="utf-8-sig", newline="") as logf:
+                w = csv.writer(logf)
+                w.writerow(header)
+                w.writerows(old_rows)
+                for x in rows:
+                    w.writerow([day, x["code"], x["name"], f"{x['today']:.2f}", f"{x['d5']:.2f}",
+                                f"{x['d20']:.2f}", f"{x['d60']:.2f}", f"{x['ytd']:.1f}",
+                                int(x["main1"]), int(x["main5"]), x["streak"], x["act"], x["score"]])
 
         # 发送门控元数据：只有"交易日 + 数据是新的一天 + 当前不早于16:10"才允许发信
         meta = {"date": day, "ts": now.isoformat(timespec="seconds"),
                 "stale": bool(stale), "weekday": now.isoweekday(),
-                "trading_day": now.isoweekday() <= 5 and not stale,
+                "trading_day": now.isoweekday() <= 5 and not stale and not non_trading,
                 "send_after": "16:10"}
         save_json(os.path.join(DATA, "last_meta.json"), meta)
 
-        save_json(os.path.join(HIST, day.replace("-", "") + ".json"),
-                  {"date": day, "_fp": fp_sum,
-                   "_hist": {x["code"]: x["_hist"] for x in rows},
-                   "report": {"idx": parts, "notice": notice,
-                              "rows": [{k: x[k] for k in ("code", "name", "role",
-                                                          "today", "d5", "d20", "main5",
-                                                          "act", "score", "why")}
-                                       for x in rows],
-                              "frows": frows},
-                   "sectors": {x["code"]: {k: v for k, v in x.items() if k != "_hist"} for x in rows},
-                   "funds": {c: {k: v for k, v in (funds.get(c) or {}).items() if k != "name"}
-                             for c in FUNDS}})
+        if not non_trading:
+            save_json(os.path.join(HIST, day.replace("-", "") + ".json"),
+                      {"date": day, "_fp": fp_sum,
+                       "_hist": {x["code"]: x["_hist"] for x in rows},
+                       "report": {"idx": parts, "notice": notice,
+                                  "rows": [{k: x[k] for k in ("code", "name", "role",
+                                                              "today", "d5", "d20", "main5",
+                                                              "act", "score", "why")}
+                                           for x in rows],
+                                  "frows": frows},
+                       "sectors": {x["code"]: {k: v for k, v in x.items() if k != "_hist"} for x in rows},
+                       "funds": {c: {k: v for k, v in (funds.get(c) or {}).items() if k != "name"}
+                                 for c in FUNDS}})
         return 0
     finally:
         sys.stdout = tee.out

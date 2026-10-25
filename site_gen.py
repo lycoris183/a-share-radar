@@ -35,11 +35,13 @@ h2{font-size:15px;margin:0 0 10px;color:#333}
 .chip{background:#f4f6f8;border-radius:6px;padding:5px 9px;font-size:12.5px;white-space:nowrap}
 .scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px}
 table{border-collapse:collapse;width:100%;min-width:520px}
-th,td{padding:7px 8px;border-bottom:1px solid #eef1f3;font-size:13px;white-space:nowrap}
+th,td{padding:7px 8px;border-bottom:1px solid #eef1f3;font-size:13px;white-space:nowrap;
+text-align:right}
 th{background:#f7f9fa;color:#5b6470;font-size:12px;font-weight:600;text-align:right;
-position:sticky;top:0}
+border-bottom:2px solid #e3e8ec;position:sticky;top:0}
 th:first-child,td:first-child{text-align:left;position:sticky;left:0;background:#fff;z-index:1}
 th:first-child{background:#f7f9fa}
+td.adv,th.adv{text-align:left;white-space:normal}
 .up{color:#c0392b}.down{color:#1e7e34}.flat{color:#8a8f98}
 .act{font-weight:700}
 .note{background:#fff8e1;border-left:4px solid #f0ad4e;padding:8px 10px;border-radius:4px;
@@ -68,16 +70,33 @@ def pct(v, dec=2):
 
 
 def load_days():
+    import datetime
     out = []
     for p in glob.glob(os.path.join(HIST, "*.json")):
         try:
             with open(p, encoding="utf-8") as f:
                 d = json.load(f)
-            if d.get("date") and d.get("report"):
-                out.append(d)
+            if not (d.get("date") and d.get("report")):
+                continue
+            try:
+                wd = datetime.date.fromisoformat(d["date"]).isoweekday()
+            except Exception:
+                wd = 1
+            if wd >= 6:          # 周末文件一律不算交易日（历史误产物兜底）
+                continue
+            out.append(d)
         except Exception:
             pass
-    return sorted(out, key=lambda d: d["date"], reverse=True)
+    # 指纹去重：节假日抓到的数据与前一交易日完全相同，只保留较早那天（真正的交易日）
+    out.sort(key=lambda d: d["date"])
+    seen, res = set(), []
+    for d in out:
+        fp = d.get("_fp") or d["date"]
+        if fp in seen:
+            continue
+        seen.add(fp)
+        res.append(d)
+    return res[::-1]
 
 
 def page(title, body, generated):
@@ -117,7 +136,7 @@ def report_block(rep, day):
             f'<td class="{cls(x["d5"])}">{pct(x["d5"])}</td>'
             f'<td class="{cls(x["d20"])}">{pct(x["d20"])}</td>'
             f'<td class="act" style="color:{AC_COLOR.get(x["act"], "#333")}">{x["act"]}</td>'
-            f'<td style="white-space:normal;min-width:190px">{x["advice"]}</td></tr>')
+            f'<td class="adv" style="min-width:190px">{x["advice"]}</td></tr>')
     return f"""
 <div class="card">
 <h2>板块信号</h2>
@@ -129,7 +148,7 @@ def report_block(rep, day):
 <div class="card">
 <h2>持仓基金与操作</h2>
 <div class="scroll"><table>
-<tr><th>基金</th><th>净值</th><th>日</th><th>5日</th><th>20日</th><th>信号</th><th>建议</th></tr>
+<tr><th>基金</th><th>净值</th><th>日</th><th>5日</th><th>20日</th><th>信号</th><th class="adv">建议</th></tr>
 {''.join(ft)}</table></div>
 <div class="tip">左右滑动可看完整表格</div>
 </div>"""
