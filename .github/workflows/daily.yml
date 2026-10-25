@@ -1,0 +1,42 @@
+name: daily-market
+
+on:
+  schedule:
+    - cron: "10 8 * * 1-5"
+    - cron: "45 8 * * 1-5"
+  workflow_dispatch:
+
+concurrency:
+  group: daily-market
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 抓取数据并生成网页
+        run: |
+          python daily.py
+          python site_gen.py
+
+      - name: 提交更新
+        run: |
+          git config user.name  "market-bot"
+          git config user.email "market-bot@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "no change"
+          else
+            git commit -m "update $(TZ=Asia/Shanghai date +%F) close"
+            git push
+          fi
