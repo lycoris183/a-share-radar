@@ -40,7 +40,16 @@ jobs:
           git add -A
           if git diff --cached --quiet; then
             echo "no change"
-          else
-            git commit -m "update $(TZ=Asia/Shanghai date +%F) close"
-            git push
+            exit 0
           fi
+          git commit -m "update $(TZ=Asia/Shanghai date +%F) close"
+          for i in 1 2 3 4 5; do
+            echo "push attempt $i"
+            if git pull --rebase --autostash origin "${GITHUB_REF_NAME}" && git push; then
+              echo "pushed"
+              exit 0
+            fi
+            sleep 8
+          done
+          echo "push failed after retries"
+          exit 1
