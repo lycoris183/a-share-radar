@@ -259,19 +259,26 @@ def cnum(v, pct=True, dec=2):
 
 
 def advice(x):
-    """把动作翻译成一句可执行建议（不追高、分次、跳过等）"""
+    """把信号翻译成一句可执行建议：位置 + 资金 + 动作 + 风控，保持短句"""
     act, d1, d5, d20 = x["act"], x["d1"], x["d5"], x["d20"]
+    m5 = x.get("main5") or 0            # 单位：万元
+    fund = f"主力5日{m5/1e4:+.0f}亿" if m5 else ""
+    pos = f"20日{d20:+.1f}%"
+    tail = ("｜" + fund) if fund else ""
+
     if act == "加仓":
         if d1 >= 5:
-            return "定投继续，追加1期可分2次买入（今日涨幅已大，勿一次满仓）"
-        return "定投继续并追加1期，可直接买"
+            return (f"动能强但日涨{d1:.1f}%偏急{tail} → 分2笔买，首笔半仓，"
+                    f"回踩5日线不破再补")
+        return (f"{pos}{tail} → 位置不高、资金配合，本期定投加1份即买，"
+                f"跌破20日线止损")
     if act == "持有":
-        return "定投继续，不额外加仓"
+        return f"5日{d5:+.1f}%{tail} → 趋势未破，定投照常，不额外加码"
     if act == "观察":
-        return "本期定投可跳过，等5日/20日转正再补"
+        return f"{pos}{tail} → 资金未共振，本期定投跳过，待5日转正+资金回补"
     if act == "减仓":
-        return "暂停定投，已持仓可减1/3，留底仓等企稳"
-    return "清仓离场，定投终止"
+        return f"{tail or pos} 持续流出 → 减1/3锁定利润，留底仓，反弹至5日线再评估"
+    return f"{pos}{tail}，趋势结构已破 → 清仓离场，等右侧信号再进"
 
 
 def build_html(day, idx_parts, rows, frows, notice):
@@ -453,7 +460,8 @@ def main():
                   f"**{act}** | {basis} |")
             frows.append({"code": code, "name": fname, "tag": tag, "nav": nav,
                           "d1": d1, "d5": d5, "d20": d20, "act": act, "basis": basis,
-                          "advice": advice({"act": act, "d1": d1, "d5": d5, "d20": d20})})
+                          "advice": advice({"act": act, "d1": d1, "d5": d5, "d20": d20,
+                                            "main5": (sect or {}).get("main5", 0)})})
 
         print("\n## 今日操作")
         for x in frows:
