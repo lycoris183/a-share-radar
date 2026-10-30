@@ -68,26 +68,68 @@ transition:.25s;pointer-events:none;z-index:9}
   th,td{padding:6px 6px;font-size:12px}
   table{min-width:460px}
 }
+
+.fh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.fh h2{margin:0}
+.fsearch{position:relative;flex:0 1 300px;margin-left:auto;min-width:180px}
+.fsearch input{width:100%;padding:7px 10px;font-size:13px;border-radius:8px;
+border:1px solid var(--btlborder);background:var(--btn);color:var(--fg);outline:none}
+.fsearch input:focus{border-color:#3b82f6}
+.fres{position:absolute;z-index:40;top:calc(100% + 4px);left:0;right:0;background:var(--card);
+border:1px solid var(--btlborder);border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.2);
+max-height:320px;overflow:auto;display:none}
+.fres.on{display:block}
+.fitem{display:flex;align-items:center;gap:6px;padding:8px 10px;
+border-bottom:1px solid var(--line);font-size:13px}
+.fitem:last-child{border-bottom:0}
+.fitem .fname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fitem .fcode{color:var(--muted);font-size:12px;flex:none}
+.fb{border:1px solid var(--btlborder);background:transparent;color:var(--fg);
+border-radius:6px;padding:3px 8px;font-size:12px;line-height:1.3;cursor:pointer;flex:none}
+.fb.pri{background:#3b82f6;border-color:#3b82f6;color:#fff}
+.fempty{padding:12px;font-size:12px;color:var(--muted);text-align:center}
+#fmenu{position:fixed;z-index:60;background:var(--card);border:1px solid var(--btlborder);
+border-radius:9px;box-shadow:0 8px 24px rgba(0,0,0,.28);display:none;min-width:104px;overflow:hidden}
+#fmenu.on{display:block}
+#fmenu button{display:block;width:100%;text-align:left;padding:9px 16px;background:none;
+border:0;color:#e5484d;font-size:14px;cursor:pointer}
+.mask{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.45);display:none;
+align-items:center;justify-content:center;padding:20px}
+.mask.on{display:flex}
+.dlg{background:var(--card);border-radius:14px;padding:20px;max-width:380px;width:100%;
+box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.dlg h3{margin:0 0 10px;font-size:16px}
+.dlg p{margin:0 0 18px;font-size:14px;line-height:1.6;color:var(--muted)}
+.dlg .row{display:flex;gap:10px;justify-content:flex-end}
+.dlg .row button{min-width:86px;padding:9px 14px;border-radius:9px;border:1px solid var(--btlborder);
+background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
+.dlg .row button.danger{background:#e5484d;border-color:#e5484d;color:#fff}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:7px 16px;font-size:13.5px;margin:0 0 18px}
+.kv span:nth-child(odd){color:var(--muted)}
+.frow{cursor:default}
 </style></head>
 <body><div class="wrap">
 <div class="bar"><h1>A股板块 2026-10-29</h1><button class="btn" id="rbtn" title="立即检查是否有新数据"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg><span>刷新</span></button>
 <button class="btn" id="tbtn" title="切换背景"><span id="tico">🌙</span></button></div>
-<div class="card"><h1>A股板块 · 2026-10-29</h1><div class="note">（重复运行，行情与上次一致）</div><div class="chips"><span class="chip">上证 3651.43 -0.82%</span><span class="chip">深成 11138.20 -2.92%</span><span class="chip">创业板 2517.59 -4.45%</span><span class="chip">恒指 22958.65 -0.59%</span></div></div>
+<div class="card"><h1>A股板块 · 2026-10-29</h1><div class="chips"><span class="chip">上证 3651.43 -0.82%</span><span class="chip">深成 11138.20 -2.92%</span><span class="chip">创业板 2517.59 -4.45%</span><span class="chip">恒指 22958.65 -0.59%</span></div></div>
 <div class="card">
 <h2>板块信号</h2>
-<div class="sub" style="margin-bottom:8px">今日信号：加仓 0 个、减仓 6 个</div>
+<div class="sub" style="margin-bottom:8px">今日信号：加仓 0 个、减仓 5 个</div>
 <div class="scroll"><table>
 <tr><th>板块</th><th>今日</th><th>5日</th><th>20日</th><th>主力5日</th><th>信号</th></tr>
-<tr><td>人形机器人</td><td class="down">-4.06%</td><td class="up">+0.56%</td><td class="down">-9.65%</td><td class="down">-89亿</td><td class="act a-cut">减仓</td></tr><tr><td>减速器</td><td class="down">-3.59%</td><td class="up">+2.44%</td><td class="down">-4.47%</td><td class="up">+18亿</td><td class="act a-hold">持有</td></tr><tr><td>物理AI</td><td class="down">-4.61%</td><td class="up">+3.94%</td><td class="up">+4.82%</td><td class="up">+2亿</td><td class="act a-hold">持有</td></tr><tr><td>计算机</td><td class="down">-2.98%</td><td class="down">-1.88%</td><td class="down">-10.06%</td><td class="down">-74亿</td><td class="act a-cut">减仓</td></tr><tr><td>半导体产业</td><td class="down">-4.45%</td><td class="down">-5.14%</td><td class="down">-24.48%</td><td class="down">-289亿</td><td class="act a-out">清仓</td></tr><tr><td>人工智能</td><td class="down">-3.03%</td><td class="down">-1.98%</td><td class="down">-10.38%</td><td class="down">-169亿</td><td class="act a-cut">减仓</td></tr><tr><td>石油石化</td><td class="up">+0.95%</td><td class="up">+3.04%</td><td class="up">+1.89%</td><td class="up">+6亿</td><td class="act a-hold">持有</td></tr><tr><td>机械设备</td><td class="down">-3.23%</td><td class="down">-1.05%</td><td class="down">-17.01%</td><td class="down">-44亿</td><td class="act a-out">清仓</td></tr><tr><td>非银金融</td><td class="down">-0.56%</td><td class="down">-0.11%</td><td class="down">-6.80%</td><td class="down">-46亿</td><td class="act a-cut">减仓</td></tr></table></div>
+<tr><td>人形机器人</td><td class="down">-4.06%</td><td class="up">+0.56%</td><td class="down">-9.65%</td><td class="down">-89亿</td><td class="act a-watch">观察</td></tr><tr><td>减速器</td><td class="down">-3.59%</td><td class="up">+2.44%</td><td class="down">-4.47%</td><td class="up">+18亿</td><td class="act a-hold">持有</td></tr><tr><td>物理AI</td><td class="down">-4.61%</td><td class="up">+3.94%</td><td class="up">+4.82%</td><td class="up">+2亿</td><td class="act a-hold">持有</td></tr><tr><td>计算机</td><td class="down">-2.98%</td><td class="down">-1.88%</td><td class="down">-10.06%</td><td class="down">-74亿</td><td class="act a-cut">减仓</td></tr><tr><td>半导体产业</td><td class="down">-4.45%</td><td class="down">-5.14%</td><td class="down">-24.48%</td><td class="down">-289亿</td><td class="act a-out">清仓</td></tr><tr><td>人工智能</td><td class="down">-3.03%</td><td class="down">-1.98%</td><td class="down">-10.38%</td><td class="down">-169亿</td><td class="act a-cut">减仓</td></tr><tr><td>石油石化</td><td class="up">+0.95%</td><td class="up">+3.04%</td><td class="up">+1.89%</td><td class="up">+6亿</td><td class="act a-hold">持有</td></tr><tr><td>机械设备</td><td class="down">-3.23%</td><td class="down">-1.05%</td><td class="down">-17.01%</td><td class="down">-44亿</td><td class="act a-cut">减仓</td></tr><tr><td>非银金融</td><td class="down">-0.56%</td><td class="down">-0.11%</td><td class="down">-6.80%</td><td class="down">-46亿</td><td class="act a-cut">减仓</td></tr></table></div>
 </div>
 <div class="card">
-<h2>持仓基金与操作</h2>
+<div class="fh"><h2>持仓基金与操作</h2>
+<div class="fsearch"><input id="fq" placeholder="搜索基金代码或名称" autocomplete="off">
+<div class="fres" id="fres"></div></div></div>
 <div class="scroll"><table>
-<tr><th>基金</th><th>净值</th><th>日</th><th>5日</th><th>20日</th><th>信号</th><th class="adv">建议</th></tr>
-<tr><td>港股银行<br><span class="sub">010365</span></td><td>2.1094</td><td class="up">+1.05%</td><td class="up">+1.31%</td><td class="down">-1.39%</td><td class="act a-hold">持有</td><td class="adv" style="min-width:210px">5日+1.3% → 趋势未破，定投照常，不额外加码</td></tr><tr><td>油气资源<br><span class="sub">023145</span></td><td>1.3781</td><td class="down">-0.22%</td><td class="up">+2.74%</td><td class="down">-2.33%</td><td class="act a-hold">持有</td><td class="adv" style="min-width:210px">5日+2.7%｜主力5日+6亿 → 趋势未破，定投照常，不额外加码</td></tr><tr><td>机器人<br><span class="sub">020973</span></td><td>1.2577</td><td class="down">-3.02%</td><td class="up">+5.68%</td><td class="down">-1.47%</td><td class="act a-cut">减仓</td><td class="adv" style="min-width:210px">｜主力5日-89亿 持续流出 → 减1/3锁定利润，留底仓，反弹至5日线再评估</td></tr><tr><td>计算机<br><span class="sub">001630</span></td><td>0.6716</td><td class="down">-2.91%</td><td class="down">-2.06%</td><td class="down">-13.10%</td><td class="act a-cut">减仓</td><td class="adv" style="min-width:210px">｜主力5日-74亿 持续流出 → 减1/3锁定利润，留底仓，反弹至5日线再评估</td></tr><tr><td>半导体<br><span class="sub">007301</span></td><td>2.9478</td><td class="down">-4.50%</td><td class="down">-5.65%</td><td class="down">-26.02%</td><td class="act a-out">清仓</td><td class="adv" style="min-width:210px">20日-26.0%｜主力5日-289亿，趋势结构已破 → 清仓离场，等右侧信号再进</td></tr></table></div>
-<div class="tip">左右滑动可看完整表格</div>
+<thead><tr><th>基金</th><th>净值</th><th>日</th><th>5日</th><th>20日</th><th>信号</th><th class="adv">建议</th></tr></thead>
+<tbody id="ftbody">
+<tr class="frow" data-code="010365" data-name="港股银行"><td>港股银行<br><span class="sub">010365</span></td><td>2.1094</td><td class="up">+1.05%</td><td class="up">+1.31%</td><td class="down">-1.39%</td><td class="act a-hold">持有</td><td class="adv" style="min-width:210px">5日+1.3% → 趋势未破，定投照常，不额外加码</td></tr><tr class="frow" data-code="023145" data-name="油气资源"><td>油气资源<br><span class="sub">023145</span></td><td>1.3781</td><td class="down">-0.22%</td><td class="up">+2.74%</td><td class="down">-2.33%</td><td class="act a-hold">持有</td><td class="adv" style="min-width:210px">5日+2.7%｜主力5日+6亿 → 趋势未破，定投照常，不额外加码</td></tr><tr class="frow" data-code="020973" data-name="机器人"><td>机器人<br><span class="sub">020973</span></td><td>1.2577</td><td class="down">-3.02%</td><td class="up">+5.68%</td><td class="down">-1.47%</td><td class="act a-watch">观察</td><td class="adv" style="min-width:210px">20日-1.5%｜主力5日-89亿 → 资金未共振，本期定投跳过，待5日转正+资金回补</td></tr><tr class="frow" data-code="001630" data-name="计算机"><td>计算机<br><span class="sub">001630</span></td><td>0.6716</td><td class="down">-2.91%</td><td class="down">-2.06%</td><td class="down">-13.10%</td><td class="act a-cut">减仓</td><td class="adv" style="min-width:210px">｜主力5日-74亿 持续流出 → 减1/3锁定利润，留底仓，反弹至5日线再评估</td></tr><tr class="frow" data-code="007301" data-name="半导体"><td>半导体<br><span class="sub">007301</span></td><td>2.9478</td><td class="down">-4.50%</td><td class="down">-5.65%</td><td class="down">-26.02%</td><td class="act a-out">清仓</td><td class="adv" style="min-width:210px">20日-26.0%｜主力5日-289亿，趋势结构已破 → 清仓离场，等右侧信号再进</td></tr></tbody></table></div>
+<div class="tip">左右滑动可看完整表格 · 长按/右键任意基金行可删除 · 上方搜索框可添加</div>
 </div><div class="card"><a href="../index.html">← 返回最新</a></div>
-<div class="card"><div class="foot">由脚本自动生成 · 2026-10-30 16:12 ·
+<div class="card"><div class="foot">由脚本自动生成 · 2026-10-31 00:42 ·
 数据：腾讯行情 / 天天基金 · 仅供参考，不构成投资建议</div></div>
 </div><div class="toast" id="toast"></div><script>
 (function(){
@@ -139,5 +181,268 @@ transition:.25s;pointer-events:none;z-index:9}
   }
   rbtn.onclick=function(){ check(true); };
   setInterval(function(){ check(false); }, 5*60*1000);
+})();
+</script><script>
+(function(){
+  var OVK='radar-funds-ov';
+  function ovLoad(){
+    try{var o=JSON.parse(localStorage.getItem(OVK)||'{}');
+      return {del:o.del||[],add:o.add||[]};}catch(e){return {del:[],add:[]};}
+  }
+  function ovSave(){try{localStorage.setItem(OVK,JSON.stringify(OV));}catch(e){}}
+  var OV=ovLoad();
+  var tbody=document.getElementById('ftbody');
+  if(!tbody) return;
+  var mask=null,menu=null;
+
+  function mk(tag,cls,txt){var e=document.createElement(tag);if(cls)e.className=cls;
+    if(txt!=null)e.textContent=txt;return e;}
+
+  function fmtPct(v){ if(v==null||isNaN(v)) return '—';
+    return (v>0?'+':'')+v.toFixed(2)+'%'; }
+  function clsOf(v){ if(v==null||isNaN(v)||v===0) return 'flat';
+    return v>0?'up':'down'; }
+
+  function setCell(tr,i,txt,cls){
+    var c=tr.children[i]; if(!c) return;
+    c.textContent=txt; if(cls) c.className=cls;
+  }
+
+  function metrics(){
+    var t=window.Data_netWorthTrend||[];
+    if(!t.length) return null;
+    var last=t[t.length-1].y, px=t.length>1?t[t.length-2].y:last;
+    function back(n){ return t.length>n+1?t[t.length-1-n].y:null; }
+    var p5=back(5), p20=back(20);
+    return {nav:last, name:window.fS_name||'',
+      d1:(last/px-1)*100,
+      d5:p5?(last/p5-1)*100:null,
+      d20:p20?(last/p20-1)*100:null};
+  }
+
+  var navQueue=[], navBusy=false;
+  function loadNav(code,done){
+    navQueue.push([code,done]); if(!navBusy) nextNav();
+  }
+  function nextNav(){
+    if(!navQueue.length){navBusy=false;return;}
+    navBusy=true;
+    var job=navQueue.shift();
+    var s=document.createElement('script');
+    s.src='https://fund.eastmoney.com/pingzhongdata/'+job[0]+'.js?v='+Date.now();
+    s.onload=function(){
+      try{ job[1](metrics()); }catch(e){}
+      s.remove(); nextNav();
+    };
+    s.onerror=function(){ try{job[1](null);}catch(e){} s.remove(); nextNav(); };
+    document.head.appendChild(s);
+  }
+
+  function adviceFor(m){
+    if(!m) return '暂无净值数据';
+    if(m.d20!=null&&m.d20<=-10) return '20日跌幅较大，趋势偏弱 → 暂不加，观察能否企稳';
+    if(m.d5!=null&&m.d20!=null&&m.d5>0&&m.d20>0) return '5日/20日同向上 → 可继续持有，回踩再加';
+    if(m.d5!=null&&m.d5<=-3) return '5日走弱 → 本期定投可跳过';
+    return '趋势未明 → 观察，等右侧信号';
+  }
+
+  function fillRow(tr,code){
+    loadNav(code,function(m){
+      if(!m){ setCell(tr,1,'—'); return; }
+      setCell(tr,1,m.nav.toFixed(4));
+      setCell(tr,2,fmtPct(m.d1),clsOf(m.d1));
+      setCell(tr,3,fmtPct(m.d5),clsOf(m.d5));
+      setCell(tr,4,fmtPct(m.d20),clsOf(m.d20));
+      setCell(tr,5,'观察','act a-watch');
+      setCell(tr,6,adviceFor(m),'adv');
+      if(m.name){ var sub=tr.querySelector('.sub'); if(sub) sub.textContent=code; }
+    });
+  }
+
+  function makeRow(code,name){
+    var tr=mk('tr','frow');
+    tr.setAttribute('data-code',code); tr.setAttribute('data-name',name||code);
+    tr.appendChild(mk('td',null,name||code)).appendChild(mk('span','sub',code));
+    for(var i=0;i<4;i++) tr.appendChild(mk('td',null,'—'));
+    tr.appendChild(mk('td','act a-watch','观察'));
+    tr.appendChild(mk('td','adv','加载中…'));
+    return tr;
+  }
+
+  function applyDeletes(){
+    var keep=OV.del;
+    Array.prototype.forEach.call(tbody.querySelectorAll('tr[data-code]'),function(tr){
+      if(keep.indexOf(tr.getAttribute('data-code'))>=0) tr.remove();
+    });
+  }
+
+  function applyAdds(){
+    OV.add.forEach(function(f){
+      if(tbody.querySelector('tr[data-code="'+f.code+'"]')) return;
+      var tr=makeRow(f.code,f.name);
+      tbody.appendChild(tr);
+      fillRow(tr,f.code);
+    });
+  }
+
+  function closeMenu(){ if(menu) menu.classList.remove('on'); }
+  function showMenu(x,y,code,name){
+    if(!menu){
+      menu=mk('div'); menu.id='fmenu';
+      var b=mk('button',null,'删除');
+      b.onclick=function(){ closeMenu(); askDelete(code,name); };
+      menu.appendChild(b); document.body.appendChild(menu);
+    }
+    menu.style.left=Math.min(x,window.innerWidth-120)+'px';
+    menu.style.top=Math.min(y,window.innerHeight-70)+'px';
+    menu.classList.add('on');
+  }
+
+  function dialog(title,body,okText,okCls,onOk){
+    if(mask) mask.remove();
+    mask=mk('div','mask');
+    var d=mk('div','dlg');
+    d.appendChild(mk('h3',null,title));
+    d.appendChild(body);
+    var row=mk('div','row');
+    var cancel=mk('button',null,'取消');
+    var ok=mk('button',okCls,okText);
+    cancel.onclick=function(){ mask.classList.remove('on'); };
+    ok.onclick=function(){ mask.classList.remove('on'); onOk(); };
+    row.appendChild(cancel); row.appendChild(ok); d.appendChild(row);
+    mask.appendChild(d); document.body.appendChild(mask);
+    requestAnimationFrame(function(){ mask.classList.add('on'); });
+    mask.onclick=function(e){ if(e.target===mask) mask.classList.remove('on'); };
+  }
+
+  function askDelete(code,name){
+    var p=mk('p',null,'你确定要删除该基金信息？');
+    p.style.color='var(--fg)';
+    dialog('删除基金',p,'确定','danger',function(){
+      var tr=tbody.querySelector('tr[data-code="'+code+'"]'); if(tr) tr.remove();
+      var i=OV.add.findIndex(function(f){return f.code===code;});
+      if(i>=0){ OV.add.splice(i,1); }
+      if(OV.del.indexOf(code)<0) OV.del.push(code);
+      ovSave();
+      toast('已删除 '+name);
+    });
+  }
+
+  // 右键 / 长按 触发删除菜单
+  var pressTimer=null, startX=0, startY=0;
+  tbody.addEventListener('contextmenu',function(e){
+    var tr=e.target.closest('tr[data-code]'); if(!tr) return;
+    e.preventDefault();
+    showMenu(e.clientX,e.clientY,tr.getAttribute('data-code'),tr.getAttribute('data-name'));
+  });
+  tbody.addEventListener('touchstart',function(e){
+    var tr=e.target.closest('tr[data-code]'); if(!tr) return;
+    var t=e.touches[0]; startX=t.clientX; startY=t.clientY;
+    pressTimer=setTimeout(function(){
+      showMenu(startX,startY,tr.getAttribute('data-code'),tr.getAttribute('data-name'));
+      if(navigator.vibrate) navigator.vibrate(15);
+    },600);
+  },{passive:true});
+  function cancelPress(){ if(pressTimer){clearTimeout(pressTimer);pressTimer=null;} }
+  tbody.addEventListener('touchend',cancelPress);
+  tbody.addEventListener('touchmove',function(e){
+    var t=e.touches[0];
+    if(Math.abs(t.clientX-startX)>10||Math.abs(t.clientY-startY)>10) cancelPress();
+  },{passive:true});
+  tbody.addEventListener('touchcancel',cancelPress);
+  document.addEventListener('click',function(e){
+    if(menu&&!menu.contains(e.target)) closeMenu();
+  });
+
+  var toastEl=document.getElementById('toast');
+  function toast(msg){
+    if(!toastEl) return;
+    toastEl.textContent=msg; toastEl.classList.add('on');
+    setTimeout(function(){toastEl.classList.remove('on');},2200);
+  }
+
+  // ---------- 搜索添加 ----------
+  var inp=document.getElementById('fq'), box=document.getElementById('fres');
+  var seq=0, timer=null;
+
+  function jsonp(key,token){
+    var cb='__fsearch'+(++seq);
+    window[cb]=function(d){
+      try{ render(d); }finally{ delete window[cb]; }
+    };
+    var s=document.createElement('script');
+    s.src='https://fundsuggest.eastmoney.com/FundSearch/api/FundSearchAPI.ashx?m=1&key='
+      +encodeURIComponent(key)+'&callback='+cb+'&_='+token;
+    s.onerror=function(){ delete window[cb]; };
+    document.head.appendChild(s);
+  }
+
+  function render(d){
+    box.innerHTML='';
+    var list=(d&&d.Datas)||[];
+    if(!list.length){ box.appendChild(mk('div','fempty','没有找到匹配的基金')); box.classList.add('on'); return; }
+    list.slice(0,12).forEach(function(it){
+      var info=it.FundBaseInfo||{};
+      var row=mk('div','fitem');
+      var nm=mk('div','fname',it.NAME||it.SHORTNAME||'');
+      var cd=mk('div','fcode',it.CODE);
+      var ba=mk('button','fb pri','添加');
+      var vb=mk('button','fb','查看');
+      ba.onclick=function(){ doAdd(it.CODE,it.NAME||info.SHORTNAME||'',info); };
+      vb.onclick=function(){ doView(it.CODE,it.NAME||info.SHORTNAME||'',info); };
+      row.appendChild(nm); row.appendChild(cd); row.appendChild(ba); row.appendChild(vb);
+      box.appendChild(row);
+    });
+    box.classList.add('on');
+  }
+
+  function doAdd(code,name,info){
+    box.classList.remove('on'); inp.value='';
+    if(tbody.querySelector('tr[data-code="'+code+'"]')){ toast('该基金已在列表中'); return; }
+    var i=OV.del.indexOf(code); if(i>=0) OV.del.splice(i,1);
+    OV.add.push({code:code,name:name});
+    ovSave();
+    var tr=makeRow(code,name);
+    tbody.appendChild(tr);
+    fillRow(tr,code);
+    toast('已添加 '+name);
+  }
+
+  function doView(code,name,info){
+    box.classList.remove('on');
+    var body=mk('div');
+    var kv=mk('div','kv');
+    function line(k,v){ kv.appendChild(mk('span',null,k)); kv.appendChild(mk('span',null,v)); }
+    line('代码',code); line('名称',name);
+    if(info.FTYPE) line('类型',info.FTYPE);
+    if(info.JJGS) line('公司',info.JJGS);
+    if(info.JJJL) line('经理',info.JJJL);
+    if(info.DWJZ) line('最新净值',Number(info.DWJZ).toFixed(4)+(info.FSRQ?'（'+info.FSRQ+'）':''));
+    body.appendChild(kv);
+    var extra=mk('p',null,'正在读取净值走势…');
+    extra.style.margin='0';
+    body.appendChild(extra);
+    dialog('基金信息',body,'关闭','',function(){});
+    loadNav(code,function(m){
+      if(!m){ extra.textContent='净值数据读取失败'; return; }
+      extra.textContent='日 '+fmtPct(m.d1)+'　5日 '+fmtPct(m.d5)+'　20日 '+fmtPct(m.d20);
+    });
+  }
+
+  inp.addEventListener('input',function(){
+    clearTimeout(timer);
+    var k=inp.value.trim();
+    if(k.length<2){ box.classList.remove('on'); return; }
+    timer=setTimeout(function(){
+      box.innerHTML=''; box.appendChild(mk('div','fempty','搜索中…')); box.classList.add('on');
+      jsonp(k,Date.now());
+    },320);
+  });
+  document.addEventListener('click',function(e){
+    if(box&&!box.contains(e.target)&&e.target!==inp) box.classList.remove('on');
+  });
+
+  applyDeletes();
+  applyAdds();
 })();
 </script></body></html>
