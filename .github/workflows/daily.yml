@@ -8,6 +8,9 @@ on:
     - cron: "40 8 * * 1-5"
     - cron: "10 9 * * 1-5"
     - cron: "40 9 * * 1-5"
+    # 午间（北京时间 12:20 / 12:50）
+    - cron: "20 4 * * 1-5"
+    - cron: "50 4 * * 1-5"
   workflow_dispatch:
 
 concurrency:
@@ -30,7 +33,14 @@ jobs:
 
       - name: 抓取数据并生成网页
         run: |
-          python daily.py
+          H=$(TZ=Asia/Shanghai date +%H)
+          if [ "$H" -lt 15 ]; then
+            echo "北京时间 ${H} 点 -> 午间快照"
+            python daily.py --midday
+          else
+            echo "北京时间 ${H} 点 -> 全天收盘"
+            python daily.py --close
+          fi
           python site_gen.py
 
       - name: 提交更新
