@@ -157,7 +157,8 @@ def qq_quotes(codes):
 
 
 def load_prev():
-    files = sorted((x for x in os.listdir(HIST) if x.endswith(".json")), reverse=True)
+    files = sorted((x for x in os.listdir(HIST)
+                    if x.endswith(".json") and not x.endswith("_am.json")), reverse=True)
     for last in files:
         try:
             with open(os.path.join(HIST, last), encoding="utf-8") as fp:
@@ -355,12 +356,23 @@ max-width:720px;margin:0 auto;padding:18px;color:#222">
 def main():
     now = datetime.datetime.now(TZ)
     day = now.strftime("%Y-%m-%d")
-    md_path = os.path.join(REPO, f"{day}.md")
+    force = "--force" in sys.argv          # 忽略周末/休市保护（补跑用）
+    for a in sys.argv:                      # --date 2026-10-30 指定快照日期
+        if a.startswith("--date="):
+            day = a.split("=", 1)[1].strip()
+    # 15:00 前视为"上午收盘快照"（11:30 收盘），否则为全天收盘
+    midday = now.hour < 15
+    if "--midday" in sys.argv:
+        midday = True
+    elif "--close" in sys.argv:
+        midday = False
+    suffix = "_am" if midday else ""
+    md_path = os.path.join(REPO, f"{day}{'_am' if midday else ''}.md")
     tee = Tee(md_path)
     sys.stdout = tee
     try:
-        print(f"# {day} 板块收盘分析\n")
-        if now.isoweekday() >= 6:
+        print(f"# {day} 板块{'上午收盘' if midday else '收盘'}分析\n")
+        if now.isoweekday() >= 6 and not force:
             print("> 今日为周末休市：不采集数据、不生成新快照，网页保留上一个交易日。")
             save_json(os.path.join(DATA, "last_meta.json"),
                       {"date": day, "ts": now.isoformat(timespec="seconds"),
@@ -511,8 +523,10 @@ def main():
         save_json(os.path.join(DATA, "last_meta.json"), meta)
 
         if not non_trading:
-            save_json(os.path.join(HIST, day.replace("-", "") + ".json"),
-                      {"date": day, "_fp": fp_sum,
+            save_json(os.path.join(HIST, day.replace("-", "") + suffix + ".json"),
+                      {"date": day, "session": "am" if midday else "close",
+                       "ts": now.isoformat(timespec="seconds"),
+                       "_fp": fp_sum,
                        "_hist": {x["code"]: x["_hist"] for x in rows},
                        "report": {"idx": parts, "notice": notice,
                                   "rows": [{k: x[k] for k in ("code", "name", "role",
