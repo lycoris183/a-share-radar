@@ -471,9 +471,87 @@ def main():
             print(f"| {fname} | {code} | {nav:.4f} | {d1:+.2f}% | {d5:+.2f}% | {d20:+.2f}% | "
                   f"**{act}** | {basis} |")
             frows.append({"code": code, "name": fname, "tag": tag, "nav": nav,
+                          "sector": sect_code or "",
                           "d1": d1, "d5": d5, "d20": d20, "act": act, "basis": basis,
                           "advice": advice({"act": act, "d1": d1, "d5": d5, "d20": d20,
                                             "main5": (sect or {}).get("main5", 0)})})
+
+        # ---- 每日推荐（3 只，来自更宽的候选池，不限于持仓）----
+        def amt(v):
+            return f"{v/1e4:+.0f}亿"
+
+        RECO_POOL = [
+            ("020973", "易方达机器人ETF联接C", "机器人", "人形机器人"),
+            ("008586", "华夏人工智能ETF联接C", "人工智能", "人工智能"),
+            ("007301", "国联安中证半导体ETF联接C", "半导体", "半导体产业"),
+            ("001630", "天弘中证计算机ETF联接C", "计算机", "计算机"),
+            ("023145", "汇添富中证油气资源ETF联接C", "油气资源", "石油石化"),
+            ("010365", "鹏华中证香港银行指数C", "港股银行", "银行"),
+            ("004070", "南方中证全指证券公司ETF联接C", "券商", "证券"),
+        ]
+        by_name = {}
+        for c, r in recs.items():
+            by_name.setdefault(r.get("name"), c)
+
+        pool = []
+        for code, fname, tag, sname in RECO_POOL:
+            sc = by_name.get(sname)
+            if not sc:
+                continue
+            n = norm(recs[sc])
+            _act, s, _why = score(n, 0)
+            pool.append((s, code, fname, tag, sname, n))
+        pool.sort(key=lambda x: -x[0])
+
+        def pick_reason(sname, n, s):
+            d5, d20, m5 = n["d5"], n["d20"], n["main5"]
+            if s >= 4:
+                verdict = "价格与资金共振，回踩分批进，别一次满仓"
+            elif s >= 1:
+                verdict = "趋势未破、资金没走，持有/定投为主"
+            else:
+                verdict = "结构一般，小仓观察、等右侧信号"
+            return f"{sname} 5日{d5:+.1f}%、20日{d20:+.1f}%，主力5日{amt(m5)}；{verdict}"
+
+        picks = []
+        for s, code, fname, tag, sname, n in pool:
+            if len(picks) >= 3:
+                break
+            if s < -2:
+                continue
+            picks.append({"code": code, "name": fname, "tag": tag, "sector": sname,
+                          "act": "推荐", "score": s,
+                          "d5": n["d5"], "d20": n["d20"], "main5": n["main5"],
+                          "reason": pick_reason(sname, n, s)})
+        # 达标不足 3 只时，用池内分数最高者补齐，并明确标注「未达标/偏弱」
+        used0 = {p["code"] for p in picks}
+        for s, code, fname, tag, sname, n in pool:
+            if len(picks) >= 3:
+                break
+            if code in used0:
+                continue
+            weak = "暂未达标，只放观察位，等5日转正、资金回流再考虑" if s >= -4 else \
+                   "走势偏弱，仅列观察名单，不建议现在买入"
+            picks.append({"code": code, "name": fname, "tag": tag, "sector": sname,
+                          "act": "观察", "score": s,
+                          "d5": n["d5"], "d20": n["d20"], "main5": n["main5"],
+                          "reason": f"{sname} 5日{n['d5']:+.1f}%、20日{n['d20']:+.1f}%，"
+                                    f"主力5日{amt(n['main5'])}；{weak}"})
+        used = {p["code"] for p in picks}
+        for fr in sorted(frows, key=lambda x: -x["d5"]):
+            if len(picks) >= 3:
+                break
+            if fr["code"] in used or fr["act"] in ("减仓", "清仓"):
+                continue
+            picks.append({"code": fr["code"], "name": fr["name"], "tag": fr["tag"],
+                          "sector": fr.get("basis", ""), "act": "推荐",
+                          "d5": fr["d5"], "d20": fr["d20"], "main5": 0,
+                          "reason": f"净值 5日{fr['d5']:+.1f}%、20日{fr['d20']:+.1f}%，"
+                                    f"同类里走势领先；小仓参与"})
+        if picks:
+            print("\n## 每日推荐")
+            for p in picks:
+                print(f"- {p['name']}（{p['code']}）：{p['reason']}")
 
         print("\n## 今日操作")
         for x in frows:
@@ -533,7 +611,7 @@ def main():
                                                               "today", "d5", "d20", "main5",
                                                               "act", "score", "why")}
                                            for x in rows],
-                                  "frows": frows},
+                                  "frows": frows, "picks": picks},
                        "sectors": {x["code"]: {k: v for k, v in x.items() if k != "_hist"} for x in rows},
                        "funds": {c: {k: v for k, v in (funds.get(c) or {}).items() if k != "name"}
                                  for c in FUNDS}})
