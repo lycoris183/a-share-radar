@@ -266,6 +266,13 @@ background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:7px 16px;font-size:13.5px;margin:0 0 18px}
 .kv span:nth-child(odd){color:var(--muted)}
 .frow{cursor:default}
+.pk{display:grid;gap:10px}
+.pki{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.pkn{font-size:15px;font-weight:600}
+.pkc{color:#2f7fe0;font-size:12.5px;margin-left:7px;font-weight:400}
+.pkr{color:var(--muted);font-size:13px;line-height:1.55;margin-top:5px}
+.pkt{display:inline-block;font-size:11.5px;padding:1px 6px;border-radius:5px;margin-left:6px;
+background:rgba(47,127,224,.12);color:#2f7fe0}
 """
 
 FUND_JS = r"""
@@ -348,7 +355,10 @@ FUND_JS = r"""
   function makeRow(code,name){
     var tr=mk('tr','frow');
     tr.setAttribute('data-code',code); tr.setAttribute('data-name',name||code);
-    tr.appendChild(mk('td',null,name||code)).appendChild(mk('span','sub',code));
+    var td0=mk('td',null,name||code);
+    td0.appendChild(mk('br'));
+    td0.appendChild(mk('span','sub',code));
+    tr.appendChild(td0);
     for(var i=0;i<4;i++) tr.appendChild(mk('td',null,'—'));
     tr.appendChild(mk('td','act a-watch','观察'));
     tr.appendChild(mk('td','adv','加载中…'));
@@ -402,7 +412,7 @@ FUND_JS = r"""
   }
 
   function askDelete(code,name){
-    var p=mk('p',null,'你确定要删除该基金信息？');
+    var p=mk('p',null,'您确定要删除「'+(name||code)+'（'+code+'）」的基金信息？');
     p.style.color='var(--fg)';
     dialog('删除基金',p,'确定','danger',function(){
       var tr=tbody.querySelector('tr[data-code="'+code+'"]'); if(tr) tr.remove();
@@ -508,7 +518,9 @@ FUND_JS = r"""
     var extra=mk('p',null,'正在读取净值走势…');
     extra.style.margin='0';
     body.appendChild(extra);
-    dialog('基金信息',body,'关闭','',function(){});
+    dialog('基金信息',body,'返回','',function(){
+      if(inp && inp.value.trim().length>=2){ box.classList.add('on'); }
+    });
     loadNav(code,function(m){
       if(!m){ extra.textContent='净值数据读取失败'; return; }
       extra.textContent='日 '+fmtPct(m.d1)+'　5日 '+fmtPct(m.d5)+'　20日 '+fmtPct(m.d20);
@@ -532,6 +544,40 @@ FUND_JS = r"""
   applyAdds();
 })();
 """
+
+
+def derive_picks(rep):
+    """旧快照没有 picks 字段时，用基金自身走势兜底推 3 只。"""
+    out = []
+    for f in sorted(rep.get("frows", []), key=lambda x: -(x.get("d5") or 0)):
+        if len(out) >= 3:
+            break
+        if f.get("act") in ("减仓", "清仓"):
+            continue
+        out.append({"code": f["code"], "name": f["name"], "tag": f.get("tag", ""),
+                    "sector": f.get("basis", ""), "act": f.get("act", ""),
+                    "d5": f.get("d5", 0), "d20": f.get("d20", 0), "main5": 0,
+                    "reason": f"净值 5日{f.get('d5', 0):+.1f}%、20日{f.get('d20', 0):+.1f}%，"
+                              f"同类里走势领先；小仓参与"})
+    return out
+
+
+def picks_block(rep):
+    picks = rep.get("picks") or derive_picks(rep)
+    if not picks:
+        return ""
+    items = []
+    for p in picks:
+        cls = ACT_CLS.get(p.get("act", ""), "")
+        items.append(
+            f'<div class="pki"><div class="pkn">{p.get("tag") or p["name"]}'
+            f'<span class="pkc">{p["code"]}</span>'
+            f'<span class="pkt">{p.get("sector") or "净值趋势"}</span></div>'
+            f'<div class="pkr">{p["reason"]}</div></div>')
+    return ('<div class="card"><h2>每日推荐</h2>'
+            '<div class="sub" style="margin:-6px 0 10px">'
+            '按板块趋势与资金面选的 3 只，仅作观察名单，非投资建议</div>'
+            f'<div class="pk">{"".join(items)}</div></div>')
 
 
 def report_block(rep, day):
@@ -671,7 +717,7 @@ def main():
 
     am = load_am(latest["date"])
     amh = am_block(am["report"], latest["date"], am.get("ts", "")) if am else ""
-    body = head + amh + report_block(rep, latest["date"]) + f"""
+    body = head + amh + picks_block(rep) + report_block(rep, latest["date"]) + f"""
 <div class="card"><h2>近10个交易日：板块日涨幅 / 基金净值</h2>
 <div class="scroll"><table>
 <tr><th>日期</th>{th}{fh}</tr>
