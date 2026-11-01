@@ -107,17 +107,24 @@ background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:7px 16px;font-size:13.5px;margin:0 0 18px}
 .kv span:nth-child(odd){color:var(--muted)}
 .frow{cursor:default}
+.pk{display:grid;gap:10px}
+.pki{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.pkn{font-size:15px;font-weight:600}
+.pkc{color:#2f7fe0;font-size:12.5px;margin-left:7px;font-weight:400}
+.pkr{color:var(--muted);font-size:13px;line-height:1.55;margin-top:5px}
+.pkt{display:inline-block;font-size:11.5px;padding:1px 6px;border-radius:5px;margin-left:6px;
+background:rgba(47,127,224,.12);color:#2f7fe0}
 </style></head>
 <body><div class="wrap">
 <div class="bar"><h1>A股板块雷达</h1><button class="btn" id="rbtn" title="立即检查是否有新数据"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg><span>刷新</span></button>
 <button class="btn" id="tbtn" title="切换背景"><span id="tico">🌙</span></button></div>
-<div class="card"><h1>A股板块雷达</h1><div class="sub">最新交易日 2026-10-30 · 上午收盘 12:30 / 全天收盘 16:10 后自动更新</div><div class="chips"><span class="chip">上证 3599.02 -1.44%</span><span class="chip">深成 10833.78 -2.73%</span><span class="chip">创业板 2413.63 -4.13%</span><span class="chip">恒指 23294.42 +1.46%</span></div></div>
+<div class="card"><h1>A股板块雷达</h1><div class="sub">最新交易日 2026-10-30 · 上午收盘 12:30 / 全天收盘 16:10 后自动更新</div><div class="note">（重复运行，行情与上次一致）</div><div class="chips"><span class="chip">上证 3599.02 -1.44%</span><span class="chip">深成 10833.78 -2.73%</span><span class="chip">创业板 2413.63 -4.13%</span><span class="chip">恒指 23294.42 +1.46%</span></div></div><div class="card"><h2>每日推荐</h2><div class="sub" style="margin:-6px 0 10px">按板块趋势与资金面选的 3 只，仅作观察名单，非投资建议</div><div class="pk"><div class="pki"><div class="pkn">油气资源<span class="pkc">023145</span><span class="pkt">石油石化</span></div><div class="pkr">石油石化 5日+3.5%、20日+3.0%，主力5日+13亿；趋势未破、资金没走，持有/定投为主</div></div><div class="pki"><div class="pkn">港股银行<span class="pkc">010365</span><span class="pkt">银行</span></div><div class="pkr">银行 5日+5.0%、20日+6.5%，主力5日+15亿；趋势未破、资金没走，持有/定投为主</div></div><div class="pki"><div class="pkn">机器人<span class="pkc">020973</span><span class="pkt">人形机器人</span></div><div class="pkr">人形机器人 5日-7.7%、20日-12.3%，主力5日-254亿；走势偏弱，仅列观察名单，不建议现在买入</div></div></div></div>
 <div class="card">
 <h2>板块信号</h2>
-<div class="sub" style="margin-bottom:8px">今日信号：加仓 0 个、减仓 7 个</div>
+<div class="sub" style="margin-bottom:8px">今日信号：加仓 0 个、减仓 8 个</div>
 <div class="scroll"><table>
 <tr><th>板块</th><th>今日</th><th>5日</th><th>20日</th><th>主力5日</th><th>信号</th></tr>
-<tr><td>人形机器人</td><td class="down">-4.20%</td><td class="down">-7.72%</td><td class="down">-12.26%</td><td class="down">-254亿</td><td class="act a-out">清仓</td></tr><tr><td>减速器</td><td class="down">-3.89%</td><td class="down">-5.85%</td><td class="down">-7.94%</td><td class="down">-17亿</td><td class="act a-cut">减仓</td></tr><tr><td>物理AI</td><td class="down">-6.65%</td><td class="down">-12.19%</td><td class="down">-0.47%</td><td class="down">-11亿</td><td class="act a-watch">观察</td></tr><tr><td>计算机</td><td class="down">-4.91%</td><td class="down">-10.85%</td><td class="down">-12.97%</td><td class="down">-155亿</td><td class="act a-out">清仓</td></tr><tr><td>半导体产业</td><td class="down">-4.85%</td><td class="down">-12.18%</td><td class="down">-26.55%</td><td class="down">-408亿</td><td class="act a-out">清仓</td></tr><tr><td>人工智能</td><td class="down">-4.16%</td><td class="down">-8.83%</td><td class="down">-13.09%</td><td class="down">-397亿</td><td class="act a-out">清仓</td></tr><tr><td>石油石化</td><td class="up">+0.91%</td><td class="up">+3.50%</td><td class="up">+2.97%</td><td class="up">+13亿</td><td class="act a-hold">持有</td></tr><tr><td>机械设备</td><td class="down">-3.94%</td><td class="down">-8.20%</td><td class="down">-18.79%</td><td class="down">-83亿</td><td class="act a-out">清仓</td></tr><tr><td>非银金融</td><td class="down">-1.09%</td><td class="down">-2.68%</td><td class="down">-6.26%</td><td class="down">-63亿</td><td class="act a-cut">减仓</td></tr></table></div>
+<tr><td>人形机器人</td><td class="down">-4.20%</td><td class="down">-7.72%</td><td class="down">-12.26%</td><td class="down">-254亿</td><td class="act a-out">清仓</td></tr><tr><td>减速器</td><td class="down">-3.89%</td><td class="down">-5.85%</td><td class="down">-7.94%</td><td class="down">-17亿</td><td class="act a-cut">减仓</td></tr><tr><td>物理AI</td><td class="down">-6.65%</td><td class="down">-12.19%</td><td class="down">-0.47%</td><td class="down">-11亿</td><td class="act a-cut">减仓</td></tr><tr><td>计算机</td><td class="down">-4.91%</td><td class="down">-10.85%</td><td class="down">-12.97%</td><td class="down">-155亿</td><td class="act a-out">清仓</td></tr><tr><td>半导体产业</td><td class="down">-4.85%</td><td class="down">-12.18%</td><td class="down">-26.55%</td><td class="down">-408亿</td><td class="act a-out">清仓</td></tr><tr><td>人工智能</td><td class="down">-4.16%</td><td class="down">-8.83%</td><td class="down">-13.09%</td><td class="down">-397亿</td><td class="act a-out">清仓</td></tr><tr><td>石油石化</td><td class="up">+0.91%</td><td class="up">+3.50%</td><td class="up">+2.97%</td><td class="up">+13亿</td><td class="act a-hold">持有</td></tr><tr><td>机械设备</td><td class="down">-3.94%</td><td class="down">-8.20%</td><td class="down">-18.79%</td><td class="down">-83亿</td><td class="act a-out">清仓</td></tr><tr><td>非银金融</td><td class="down">-1.09%</td><td class="down">-2.68%</td><td class="down">-6.26%</td><td class="down">-63亿</td><td class="act a-cut">减仓</td></tr></table></div>
 </div>
 <div class="card">
 <div class="fh"><h2>持仓基金与操作</h2>
@@ -134,7 +141,7 @@ background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
 <tr><th>日期</th><th>人形机器人</th><th>物理AI</th><th>计算机</th><th>半导体</th><th>石油石化</th><th>银行</th><th>港股银行</th><th>油气资源</th><th>机器人</th><th>计算机</th><th>半导体</th></tr>
 <tr><td>2026-10-30</td><td class="down">-4.20%</td><td class="down">-6.65%</td><td class="down">-4.91%</td><td class="down">-4.85%</td><td class="up">+0.91%</td><td class="up">+0.51%</td><td>2.1365</td><td>1.3938</td><td>1.2161</td><td>0.6432</td><td>2.7941</td></tr><tr><td>2026-10-29</td><td class="down">-4.06%</td><td class="down">-4.61%</td><td class="down">-2.98%</td><td class="down">-4.45%</td><td class="up">+0.95%</td><td class="up">+1.97%</td><td>2.1094</td><td>1.3781</td><td>1.2577</td><td>0.6716</td><td>2.9478</td></tr><tr><td>2026-10-26</td><td class="down">-0.81%</td><td class="up">+1.80%</td><td class="down">-0.03%</td><td class="down">-3.07%</td><td class="up">+2.41%</td><td class="up">+1.76%</td><td>2.0581</td><td>1.3497</td><td>1.2797</td><td>0.7137</td><td>3.2140</td></tr><tr><td>2026-10-23</td><td class="up">+4.38%</td><td class="up">+10.50%</td><td class="up">+4.67%</td><td class="up">+2.79%</td><td class="up">+0.46%</td><td class="down">-1.30%</td><td>2.0581</td><td>1.3497</td><td>1.2797</td><td>0.7137</td><td>3.2140</td></tr></table></div>
 <div class="tip">红色=涨，绿色=跌 · 只保留最近 10 个交易日</div></div>
-<div class="card"><div class="foot">由脚本自动生成 · 2026-10-31 00:42 ·
+<div class="card"><div class="foot">由脚本自动生成 · 2026-11-01 15:16 ·
 数据：腾讯行情 / 天天基金 · 仅供参考，不构成投资建议</div></div>
 </div><div class="toast" id="toast"></div><script>
 (function(){
@@ -267,7 +274,10 @@ background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
   function makeRow(code,name){
     var tr=mk('tr','frow');
     tr.setAttribute('data-code',code); tr.setAttribute('data-name',name||code);
-    tr.appendChild(mk('td',null,name||code)).appendChild(mk('span','sub',code));
+    var td0=mk('td',null,name||code);
+    td0.appendChild(mk('br'));
+    td0.appendChild(mk('span','sub',code));
+    tr.appendChild(td0);
     for(var i=0;i<4;i++) tr.appendChild(mk('td',null,'—'));
     tr.appendChild(mk('td','act a-watch','观察'));
     tr.appendChild(mk('td','adv','加载中…'));
@@ -321,7 +331,7 @@ background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
   }
 
   function askDelete(code,name){
-    var p=mk('p',null,'你确定要删除该基金信息？');
+    var p=mk('p',null,'您确定要删除「'+(name||code)+'（'+code+'）」的基金信息？');
     p.style.color='var(--fg)';
     dialog('删除基金',p,'确定','danger',function(){
       var tr=tbody.querySelector('tr[data-code="'+code+'"]'); if(tr) tr.remove();
@@ -427,7 +437,9 @@ background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
     var extra=mk('p',null,'正在读取净值走势…');
     extra.style.margin='0';
     body.appendChild(extra);
-    dialog('基金信息',body,'关闭','',function(){});
+    dialog('基金信息',body,'返回','',function(){
+      if(inp && inp.value.trim().length>=2){ box.classList.add('on'); }
+    });
     loadNav(code,function(m){
       if(!m){ extra.textContent='净值数据读取失败'; return; }
       extra.textContent='日 '+fmtPct(m.d1)+'　5日 '+fmtPct(m.d5)+'　20日 '+fmtPct(m.d20);
