@@ -230,7 +230,13 @@ def page(title, body, generated, refresh=True):
 FUND_CSS = """
 .fh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .fh h2{margin:0}
-.fsearch{position:relative;flex:0 1 300px;margin-left:auto;min-width:180px}
+.fsearch{position:relative;flex:0 1 340px;margin-left:auto;min-width:180px}
+.fbar{display:flex;gap:6px;align-items:center}
+.fbar input{flex:1;min-width:0}
+.fb.ic{padding:6px 9px;font-size:12px;white-space:nowrap}
+.dlg textarea{width:100%;height:88px;box-sizing:border-box;margin:0 0 14px;padding:8px 10px;
+font-size:12px;font-family:ui-monospace,Consolas,monospace;border-radius:8px;resize:vertical;
+border:1px solid var(--btlborder);background:var(--btn);color:var(--fg);outline:none}
 .fsearch input{width:100%;padding:7px 10px;font-size:13px;border-radius:8px;
 border:1px solid var(--btlborder);background:var(--btn);color:var(--fg);outline:none}
 .fsearch input:focus{border-color:#3b82f6}
@@ -386,15 +392,20 @@ FUND_JS = r"""
     if(!menu){
       menu=mk('div'); menu.id='fmenu';
       var b=mk('button',null,'删除');
-      b.onclick=function(){ closeMenu(); askDelete(code,name); };
+      b.onclick=function(){
+        closeMenu();
+        askDelete(menu.getAttribute('data-code'), menu.getAttribute('data-name'));
+      };
       menu.appendChild(b); document.body.appendChild(menu);
     }
+    menu.setAttribute('data-code',code);
+    menu.setAttribute('data-name',name||code);
     menu.style.left=Math.min(x,window.innerWidth-120)+'px';
     menu.style.top=Math.min(y,window.innerHeight-70)+'px';
     menu.classList.add('on');
   }
 
-  function dialog(title,body,okText,okCls,onOk){
+  function dialog(title,body,okText,okCls,onOk,onCancel){
     if(mask) mask.remove();
     mask=mk('div','mask');
     var d=mk('div','dlg');
@@ -403,7 +414,7 @@ FUND_JS = r"""
     var row=mk('div','row');
     var cancel=mk('button',null,'取消');
     var ok=mk('button',okCls,okText);
-    cancel.onclick=function(){ mask.classList.remove('on'); };
+    cancel.onclick=function(){ mask.classList.remove('on'); if(onCancel) onCancel(); };
     ok.onclick=function(){ mask.classList.remove('on'); onOk(); };
     row.appendChild(cancel); row.appendChild(ok); d.appendChild(row);
     mask.appendChild(d); document.body.appendChild(mask);
@@ -519,7 +530,12 @@ FUND_JS = r"""
     extra.style.margin='0';
     body.appendChild(extra);
     dialog('基金信息',body,'返回','',function(){
-      if(inp && inp.value.trim().length>=2){ box.classList.add('on'); }
+      // 延迟到本次点击冒泡结束，避免被"点空白关列表"的逻辑立刻收起
+      setTimeout(function(){ box.classList.add('on'); },0);
+    },function(){
+      // 取消：清空搜索框与结果，等同于放弃这次搜索
+      if(inp) inp.value='';
+      box.innerHTML=''; box.classList.remove('on');
     });
     loadNav(code,function(m){
       if(!m){ extra.textContent='净值数据读取失败'; return; }
@@ -539,6 +555,55 @@ FUND_JS = r"""
   document.addEventListener('click',function(e){
     if(box&&!box.contains(e.target)&&e.target!==inp) box.classList.remove('on');
   });
+
+  // ---------- 导出 / 导入（跨设备带基金列表）----------
+  function ovCode(){
+    try{ return btoa(unescape(encodeURIComponent(JSON.stringify(OV)))); }
+    catch(e){ return ''; }
+  }
+
+  function ovApply(txt){
+    var s=(txt||'').trim();
+    if(!s) return false;
+    var o=null;
+    try{ o=JSON.parse(decodeURIComponent(escape(atob(s)))); }
+    catch(e){
+      try{ o=JSON.parse(s); }catch(e2){ return false; }
+    }
+    if(!o||typeof o!=='object') return false;
+    OV={del:(o.del||[]).filter(function(x){return typeof x==='string';}),
+        add:(o.add||[]).filter(function(x){return x&&x.code;})
+             .map(function(x){return {code:x.code,name:x.name||x.code};})};
+    ovSave(); return true;
+  }
+
+  var bexp=document.getElementById('fexp'), bimp=document.getElementById('fimp');
+  if(bexp){
+    bexp.onclick=function(){
+      var body=mk('div');
+      body.appendChild(mk('p',null,'复制下面这段码，到另一台设备的「导入」里粘贴即可（只含你增删的基金，不含持仓数量与金额）。'));
+      var ta=mk('textarea'); ta.value=ovCode(); ta.readOnly=true;
+      body.appendChild(ta);
+      dialog('导出我的基金列表',body,'复制','',function(){
+        ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        if(navigator.clipboard) navigator.clipboard.writeText(ta.value).catch(function(){});
+        toast('已复制，去另一台设备粘贴导入');
+      });
+    };
+  }
+  if(bimp){
+    bimp.onclick=function(){
+      var body=mk('div');
+      body.appendChild(mk('p',null,'把在别的设备「导出」得到的码粘贴到这里，导入后以这份列表为准。'));
+      var ta=mk('textarea'); ta.placeholder='粘贴导出的码…';
+      body.appendChild(ta);
+      dialog('导入基金列表',body,'导入','',function(){
+        if(ovApply(ta.value)){ toast('导入成功，正在刷新…'); setTimeout(function(){location.reload();},600); }
+        else toast('这段码不对，检查是否复制完整');
+      });
+    };
+  }
 
   applyDeletes();
   applyAdds();
@@ -616,7 +681,9 @@ def report_block(rep, day):
 </div>
 <div class="card">
 <div class="fh"><h2>持仓基金与操作</h2>
-<div class="fsearch"><input id="fq" placeholder="搜索基金代码或名称" autocomplete="off">
+<div class="fsearch"><div class="fbar"><input id="fq" placeholder="搜索基金代码或名称" autocomplete="off">
+<button class="fb ic" id="fexp" title="导出本设备已改的基金列表">导出</button>
+<button class="fb ic" id="fimp" title="把导出的码导入到本设备">导入</button></div>
 <div class="fres" id="fres"></div></div></div>
 <div class="scroll"><table>
 <thead><tr><th>基金</th><th>净值</th><th>日</th><th>5日</th><th>20日</th><th>信号</th><th class="adv">建议</th></tr></thead>
