@@ -71,7 +71,13 @@ transition:.25s;pointer-events:none;z-index:9}
 
 .fh{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
 .fh h2{margin:0}
-.fsearch{position:relative;flex:0 1 300px;margin-left:auto;min-width:180px}
+.fsearch{position:relative;flex:0 1 340px;margin-left:auto;min-width:180px}
+.fbar{display:flex;gap:6px;align-items:center}
+.fbar input{flex:1;min-width:0}
+.fb.ic{padding:6px 9px;font-size:12px;white-space:nowrap}
+.dlg textarea{width:100%;height:88px;box-sizing:border-box;margin:0 0 14px;padding:8px 10px;
+font-size:12px;font-family:ui-monospace,Consolas,monospace;border-radius:8px;resize:vertical;
+border:1px solid var(--btlborder);background:var(--btn);color:var(--fg);outline:none}
 .fsearch input{width:100%;padding:7px 10px;font-size:13px;border-radius:8px;
 border:1px solid var(--btlborder);background:var(--btn);color:var(--fg);outline:none}
 .fsearch input:focus{border-color:#3b82f6}
@@ -107,29 +113,38 @@ background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:7px 16px;font-size:13.5px;margin:0 0 18px}
 .kv span:nth-child(odd){color:var(--muted)}
 .frow{cursor:default}
+.pk{display:grid;gap:10px}
+.pki{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.pkn{font-size:15px;font-weight:600}
+.pkc{color:#2f7fe0;font-size:12.5px;margin-left:7px;font-weight:400}
+.pkr{color:var(--muted);font-size:13px;line-height:1.55;margin-top:5px}
+.pkt{display:inline-block;font-size:11.5px;padding:1px 6px;border-radius:5px;margin-left:6px;
+background:rgba(47,127,224,.12);color:#2f7fe0}
 </style></head>
 <body><div class="wrap">
 <div class="bar"><h1>A股板块 2026-10-29</h1><button class="btn" id="rbtn" title="立即检查是否有新数据"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-2.6-6.4"/><path d="M21 3v6h-6"/></svg><span>刷新</span></button>
 <button class="btn" id="tbtn" title="切换背景"><span id="tico">🌙</span></button></div>
-<div class="card"><h1>A股板块 · 2026-10-29</h1><div class="chips"><span class="chip">上证 3651.43 -0.82%</span><span class="chip">深成 11138.20 -2.92%</span><span class="chip">创业板 2517.59 -4.45%</span><span class="chip">恒指 22958.65 -0.59%</span></div></div>
+<div class="card"><h1>A股板块 · 2026-10-29</h1><div class="note">（重复运行，行情与上次一致）</div><div class="chips"><span class="chip">上证 3651.43 -0.82%</span><span class="chip">深成 11138.20 -2.92%</span><span class="chip">创业板 2517.59 -4.45%</span><span class="chip">恒指 22958.65 -0.59%</span></div></div>
 <div class="card">
 <h2>板块信号</h2>
-<div class="sub" style="margin-bottom:8px">今日信号：加仓 0 个、减仓 5 个</div>
+<div class="sub" style="margin-bottom:8px">今日信号：加仓 0 个、减仓 6 个</div>
 <div class="scroll"><table>
 <tr><th>板块</th><th>今日</th><th>5日</th><th>20日</th><th>主力5日</th><th>信号</th></tr>
-<tr><td>人形机器人</td><td class="down">-4.06%</td><td class="up">+0.56%</td><td class="down">-9.65%</td><td class="down">-89亿</td><td class="act a-watch">观察</td></tr><tr><td>减速器</td><td class="down">-3.59%</td><td class="up">+2.44%</td><td class="down">-4.47%</td><td class="up">+18亿</td><td class="act a-hold">持有</td></tr><tr><td>物理AI</td><td class="down">-4.61%</td><td class="up">+3.94%</td><td class="up">+4.82%</td><td class="up">+2亿</td><td class="act a-hold">持有</td></tr><tr><td>计算机</td><td class="down">-2.98%</td><td class="down">-1.88%</td><td class="down">-10.06%</td><td class="down">-74亿</td><td class="act a-cut">减仓</td></tr><tr><td>半导体产业</td><td class="down">-4.45%</td><td class="down">-5.14%</td><td class="down">-24.48%</td><td class="down">-289亿</td><td class="act a-out">清仓</td></tr><tr><td>人工智能</td><td class="down">-3.03%</td><td class="down">-1.98%</td><td class="down">-10.38%</td><td class="down">-169亿</td><td class="act a-cut">减仓</td></tr><tr><td>石油石化</td><td class="up">+0.95%</td><td class="up">+3.04%</td><td class="up">+1.89%</td><td class="up">+6亿</td><td class="act a-hold">持有</td></tr><tr><td>机械设备</td><td class="down">-3.23%</td><td class="down">-1.05%</td><td class="down">-17.01%</td><td class="down">-44亿</td><td class="act a-cut">减仓</td></tr><tr><td>非银金融</td><td class="down">-0.56%</td><td class="down">-0.11%</td><td class="down">-6.80%</td><td class="down">-46亿</td><td class="act a-cut">减仓</td></tr></table></div>
+<tr><td>人形机器人</td><td class="down">-4.06%</td><td class="up">+0.56%</td><td class="down">-9.65%</td><td class="down">-89亿</td><td class="act a-cut">减仓</td></tr><tr><td>减速器</td><td class="down">-3.59%</td><td class="up">+2.44%</td><td class="down">-4.47%</td><td class="up">+18亿</td><td class="act a-hold">持有</td></tr><tr><td>物理AI</td><td class="down">-4.61%</td><td class="up">+3.94%</td><td class="up">+4.82%</td><td class="up">+2亿</td><td class="act a-hold">持有</td></tr><tr><td>计算机</td><td class="down">-2.98%</td><td class="down">-1.88%</td><td class="down">-10.06%</td><td class="down">-74亿</td><td class="act a-cut">减仓</td></tr><tr><td>半导体产业</td><td class="down">-4.45%</td><td class="down">-5.14%</td><td class="down">-24.48%</td><td class="down">-289亿</td><td class="act a-out">清仓</td></tr><tr><td>人工智能</td><td class="down">-3.03%</td><td class="down">-1.98%</td><td class="down">-10.38%</td><td class="down">-169亿</td><td class="act a-cut">减仓</td></tr><tr><td>石油石化</td><td class="up">+0.95%</td><td class="up">+3.04%</td><td class="up">+1.89%</td><td class="up">+6亿</td><td class="act a-hold">持有</td></tr><tr><td>机械设备</td><td class="down">-3.23%</td><td class="down">-1.05%</td><td class="down">-17.01%</td><td class="down">-44亿</td><td class="act a-out">清仓</td></tr><tr><td>非银金融</td><td class="down">-0.56%</td><td class="down">-0.11%</td><td class="down">-6.80%</td><td class="down">-46亿</td><td class="act a-cut">减仓</td></tr></table></div>
 </div>
 <div class="card">
 <div class="fh"><h2>持仓基金与操作</h2>
-<div class="fsearch"><input id="fq" placeholder="搜索基金代码或名称" autocomplete="off">
+<div class="fsearch"><div class="fbar"><input id="fq" placeholder="搜索基金代码或名称" autocomplete="off">
+<button class="fb ic" id="fexp" title="导出本设备已改的基金列表">导出</button>
+<button class="fb ic" id="fimp" title="把导出的码导入到本设备">导入</button></div>
 <div class="fres" id="fres"></div></div></div>
 <div class="scroll"><table>
 <thead><tr><th>基金</th><th>净值</th><th>日</th><th>5日</th><th>20日</th><th>信号</th><th class="adv">建议</th></tr></thead>
 <tbody id="ftbody">
-<tr class="frow" data-code="010365" data-name="港股银行"><td>港股银行<br><span class="sub">010365</span></td><td>2.1094</td><td class="up">+1.05%</td><td class="up">+1.31%</td><td class="down">-1.39%</td><td class="act a-hold">持有</td><td class="adv" style="min-width:210px">5日+1.3% → 趋势未破，定投照常，不额外加码</td></tr><tr class="frow" data-code="023145" data-name="油气资源"><td>油气资源<br><span class="sub">023145</span></td><td>1.3781</td><td class="down">-0.22%</td><td class="up">+2.74%</td><td class="down">-2.33%</td><td class="act a-hold">持有</td><td class="adv" style="min-width:210px">5日+2.7%｜主力5日+6亿 → 趋势未破，定投照常，不额外加码</td></tr><tr class="frow" data-code="020973" data-name="机器人"><td>机器人<br><span class="sub">020973</span></td><td>1.2577</td><td class="down">-3.02%</td><td class="up">+5.68%</td><td class="down">-1.47%</td><td class="act a-watch">观察</td><td class="adv" style="min-width:210px">20日-1.5%｜主力5日-89亿 → 资金未共振，本期定投跳过，待5日转正+资金回补</td></tr><tr class="frow" data-code="001630" data-name="计算机"><td>计算机<br><span class="sub">001630</span></td><td>0.6716</td><td class="down">-2.91%</td><td class="down">-2.06%</td><td class="down">-13.10%</td><td class="act a-cut">减仓</td><td class="adv" style="min-width:210px">｜主力5日-74亿 持续流出 → 减1/3锁定利润，留底仓，反弹至5日线再评估</td></tr><tr class="frow" data-code="007301" data-name="半导体"><td>半导体<br><span class="sub">007301</span></td><td>2.9478</td><td class="down">-4.50%</td><td class="down">-5.65%</td><td class="down">-26.02%</td><td class="act a-out">清仓</td><td class="adv" style="min-width:210px">20日-26.0%｜主力5日-289亿，趋势结构已破 → 清仓离场，等右侧信号再进</td></tr></tbody></table></div>
+<tr class="frow" data-code="010365" data-name="港股银行"><td>港股银行<br><span class="sub">010365</span></td><td>2.1094</td><td class="up">+1.05%</td><td class="up">+1.31%</td><td class="down">-1.39%</td><td class="act a-hold">持有</td><td class="adv" style="min-width:210px">5日+1.3% → 趋势未破，定投照常，不额外加码</td></tr><tr class="frow" data-code="023145" data-name="油气资源"><td>油气资源<br><span class="sub">023145</span></td><td>1.3781</td><td class="down">-0.22%</td><td class="up">+2.74%</td><td class="down">-2.33%</td><td class="act a-hold">持有</td><td class="adv" style="min-width:210px">5日+2.7%｜主力5日+6亿 → 趋势未破，定投照常，不额外加码</td></tr><tr class="frow" data-code="020973" data-name="机器人"><td>机器人<br><span class="sub">020973</span></td><td>1.2577</td><td class="down">-3.02%</td><td class="up">+5.68%</td><td class="down">-1.47%</td><td class="act a-cut">减仓</td><td class="adv" style="min-width:210px">｜主力5日-89亿 持续流出 → 减1/3锁定利润，留底仓，反弹至5日线再评估</td></tr><tr class="frow" data-code="001630" data-name="计算机"><td>计算机<br><span class="sub">001630</span></td><td>0.6716</td><td class="down">-2.91%</td><td class="down">-2.06%</td><td class="down">-13.10%</td><td class="act a-cut">减仓</td><td class="adv" style="min-width:210px">｜主力5日-74亿 持续流出 → 减1/3锁定利润，留底仓，反弹至5日线再评估</td></tr><tr class="frow" data-code="007301" data-name="半导体"><td>半导体<br><span class="sub">007301</span></td><td>2.9478</td><td class="down">-4.50%</td><td class="down">-5.65%</td><td class="down">-26.02%</td><td class="act a-out">清仓</td><td class="adv" style="min-width:210px">20日-26.0%｜主力5日-289亿，趋势结构已破 → 清仓离场，等右侧信号再进</td></tr></tbody></table></div>
 <div class="tip">左右滑动可看完整表格 · 长按/右键任意基金行可删除 · 上方搜索框可添加</div>
 </div><div class="card"><a href="../index.html">← 返回最新</a></div>
-<div class="card"><div class="foot">由脚本自动生成 · 2026-10-31 00:42 ·
+<div class="card"><div class="foot">由脚本自动生成 · 2026-11-02 04:50 ·
 数据：腾讯行情 / 天天基金 · 仅供参考，不构成投资建议</div></div>
 </div><div class="toast" id="toast"></div><script>
 (function(){
@@ -262,7 +277,10 @@ background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
   function makeRow(code,name){
     var tr=mk('tr','frow');
     tr.setAttribute('data-code',code); tr.setAttribute('data-name',name||code);
-    tr.appendChild(mk('td',null,name||code)).appendChild(mk('span','sub',code));
+    var td0=mk('td',null,name||code);
+    td0.appendChild(mk('br'));
+    td0.appendChild(mk('span','sub',code));
+    tr.appendChild(td0);
     for(var i=0;i<4;i++) tr.appendChild(mk('td',null,'—'));
     tr.appendChild(mk('td','act a-watch','观察'));
     tr.appendChild(mk('td','adv','加载中…'));
@@ -290,15 +308,20 @@ background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
     if(!menu){
       menu=mk('div'); menu.id='fmenu';
       var b=mk('button',null,'删除');
-      b.onclick=function(){ closeMenu(); askDelete(code,name); };
+      b.onclick=function(){
+        closeMenu();
+        askDelete(menu.getAttribute('data-code'), menu.getAttribute('data-name'));
+      };
       menu.appendChild(b); document.body.appendChild(menu);
     }
+    menu.setAttribute('data-code',code);
+    menu.setAttribute('data-name',name||code);
     menu.style.left=Math.min(x,window.innerWidth-120)+'px';
     menu.style.top=Math.min(y,window.innerHeight-70)+'px';
     menu.classList.add('on');
   }
 
-  function dialog(title,body,okText,okCls,onOk){
+  function dialog(title,body,okText,okCls,onOk,onCancel){
     if(mask) mask.remove();
     mask=mk('div','mask');
     var d=mk('div','dlg');
@@ -307,7 +330,7 @@ background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
     var row=mk('div','row');
     var cancel=mk('button',null,'取消');
     var ok=mk('button',okCls,okText);
-    cancel.onclick=function(){ mask.classList.remove('on'); };
+    cancel.onclick=function(){ mask.classList.remove('on'); if(onCancel) onCancel(); };
     ok.onclick=function(){ mask.classList.remove('on'); onOk(); };
     row.appendChild(cancel); row.appendChild(ok); d.appendChild(row);
     mask.appendChild(d); document.body.appendChild(mask);
@@ -316,7 +339,7 @@ background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
   }
 
   function askDelete(code,name){
-    var p=mk('p',null,'你确定要删除该基金信息？');
+    var p=mk('p',null,'您确定要删除「'+(name||code)+'（'+code+'）」的基金信息？');
     p.style.color='var(--fg)';
     dialog('删除基金',p,'确定','danger',function(){
       var tr=tbody.querySelector('tr[data-code="'+code+'"]'); if(tr) tr.remove();
@@ -422,7 +445,14 @@ background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
     var extra=mk('p',null,'正在读取净值走势…');
     extra.style.margin='0';
     body.appendChild(extra);
-    dialog('基金信息',body,'关闭','',function(){});
+    dialog('基金信息',body,'返回','',function(){
+      // 延迟到本次点击冒泡结束，避免被"点空白关列表"的逻辑立刻收起
+      setTimeout(function(){ box.classList.add('on'); },0);
+    },function(){
+      // 取消：清空搜索框与结果，等同于放弃这次搜索
+      if(inp) inp.value='';
+      box.innerHTML=''; box.classList.remove('on');
+    });
     loadNav(code,function(m){
       if(!m){ extra.textContent='净值数据读取失败'; return; }
       extra.textContent='日 '+fmtPct(m.d1)+'　5日 '+fmtPct(m.d5)+'　20日 '+fmtPct(m.d20);
@@ -441,6 +471,55 @@ background:transparent;color:var(--fg);font-size:14px;cursor:pointer}
   document.addEventListener('click',function(e){
     if(box&&!box.contains(e.target)&&e.target!==inp) box.classList.remove('on');
   });
+
+  // ---------- 导出 / 导入（跨设备带基金列表）----------
+  function ovCode(){
+    try{ return btoa(unescape(encodeURIComponent(JSON.stringify(OV)))); }
+    catch(e){ return ''; }
+  }
+
+  function ovApply(txt){
+    var s=(txt||'').trim();
+    if(!s) return false;
+    var o=null;
+    try{ o=JSON.parse(decodeURIComponent(escape(atob(s)))); }
+    catch(e){
+      try{ o=JSON.parse(s); }catch(e2){ return false; }
+    }
+    if(!o||typeof o!=='object') return false;
+    OV={del:(o.del||[]).filter(function(x){return typeof x==='string';}),
+        add:(o.add||[]).filter(function(x){return x&&x.code;})
+             .map(function(x){return {code:x.code,name:x.name||x.code};})};
+    ovSave(); return true;
+  }
+
+  var bexp=document.getElementById('fexp'), bimp=document.getElementById('fimp');
+  if(bexp){
+    bexp.onclick=function(){
+      var body=mk('div');
+      body.appendChild(mk('p',null,'复制下面这段码，到另一台设备的「导入」里粘贴即可（只含你增删的基金，不含持仓数量与金额）。'));
+      var ta=mk('textarea'); ta.value=ovCode(); ta.readOnly=true;
+      body.appendChild(ta);
+      dialog('导出我的基金列表',body,'复制','',function(){
+        ta.select();
+        try{ document.execCommand('copy'); }catch(e){}
+        if(navigator.clipboard) navigator.clipboard.writeText(ta.value).catch(function(){});
+        toast('已复制，去另一台设备粘贴导入');
+      });
+    };
+  }
+  if(bimp){
+    bimp.onclick=function(){
+      var body=mk('div');
+      body.appendChild(mk('p',null,'把在别的设备「导出」得到的码粘贴到这里，导入后以这份列表为准。'));
+      var ta=mk('textarea'); ta.placeholder='粘贴导出的码…';
+      body.appendChild(ta);
+      dialog('导入基金列表',body,'导入','',function(){
+        if(ovApply(ta.value)){ toast('导入成功，正在刷新…'); setTimeout(function(){location.reload();},600); }
+        else toast('这段码不对，检查是否复制完整');
+      });
+    };
+  }
 
   applyDeletes();
   applyAdds();
