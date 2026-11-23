@@ -1,8 +1,8 @@
 {
- "date": "2026-11-23",
- "ts": "2026-11-23T23:26:28+08:00",
- "stale": true,
- "weekday": 1,
+ "date": "2026-11-24",
+ "ts": "2026-11-24T04:04:58+08:00",
+ "stale": false,
+ "weekday": 2,
  "trading_day": false,
  "send_after": "16:10"
 }
